@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIMSARA TECH Profile</title>
+<!-- Font Awesome (Icons සඳහා) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* මූලික CSS styling (Dark mode පෙරනිමියෙන්) */
+:root {
+--bg-color: #121212;
+--container-bg: #1e1e1e;
+--text-color: #e0e0e0;
+--text-secondary: #aaaaaa;
+--border-color: #333333;
+--header-bg: #181818;
+--dropdown-bg: #181818;
+}
+
+/* Light Mode සඳහා වර්ණ */
+[data-theme="light"] {
+--bg-color: #f3f2ef;
+--container-bg: #ffffff;
+--text-color: #1d1d1d;
+--text-secondary: #5e5e5e;
+--border-color: #cccccc;
+--header-bg: #ffffff;
+--dropdown-bg: #ffffff;
+}
+
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 0;
+background-color: var(--bg-color);
+color: var(--text-color);
+transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- Loading Screen Styles --- */
+#loading-screen {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: #0b0b0b;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 9999;
+transition: opacity 0.5s ease;
+}
+
+.loading-graphic {
+width: 140px;
+height: 140px;
+margin-bottom: 25px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.loading-graphic svg {
+width: 100%;
+height: 100%;
+animation: pulseSvg 2s infinite ease-in-out;
+}
+
+@keyframes pulseSvg {
+0%, 100% { transform: scale(0.95); opacity: 0.8; }
+50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* වීඩියෝවේ ඇති ආකාරයට LOADING අකුරු ඇනිමේෂන් එක */
+.loading-text {
+display: flex;
+font-family: 'Courier New', Courier, monospace;
+font-size: 24px;
+font-weight: bold;
+letter-spacing: 6px;
+color: #ffffff;
+}
+
+.loading-text span {
+animation: loadingPulse 1.4s infinite ease-in-out both;
+}
+
+.loading-text span:nth-child(1) { animation-delay: -0.32s; }
+.loading-text span:nth-child(2) { animation-delay: -0.16s; }
+.loading-text span:nth-child(3) { animation-delay: 0s; }
+.loading-text span:nth-child(4) { animation-delay: 0.16s; }
+.loading-text span:nth-child(5) { animation-delay: 0.32s; }
+.loading-text span:nth-child(6) { animation-delay: 0.48s; }
+.loading-text span:nth-child(7) { animation-delay: 0.64s; }
+
+@keyframes loadingPulse {
+0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+40% { opacity: 1; transform: scale(1.2); color: #00d2ff; text-shadow: 0 0 10px #00d2ff; }
+}
+
+/* ප්‍රධාන අන්තර්ගතය සැඟවීම සඳහා */
+#main-content {
+display: none;
+}
+
+/* ඉහළ Header කොටස */
+.top-header {
+width: 100%;
+max-width: 550px;
+margin: 0 auto;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 12px 20px;
+background-color: var(--header-bg);
+box-sizing: border-box;
+border-bottom: 1px solid var(--border-color);
+position: relative;
+}
+
+/* RGB Animation සඳහා NIMSARA TECH නම */
+.header-logo {
+font-weight: bold;
+font-size: 25px;
+background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-size: 400%;
+animation: rgbAnimation 8s linear infinite;
+}
+
+@keyframes rgbAnimation {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+.controls-container {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+/* ලා නිල් පාටින් ආලෝකය දිවෙන Glow Border Wrapper */
+.glow-border-wrapper {
+position: relative;
+border-radius: 20px;
+padding: 2.5px;
+background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff);
+background-size: 200% 200%;
+animation: lightRun 3s linear infinite;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+@keyframes lightRun {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+/* Custom Dropdown Styling */
+.custom-dropdown {
+position: relative;
+display: inline-block;
+}
+
+.dropdown-btn {
+background-color: var(--container-bg);
+color: var(--text-color);
+padding: 6px 14px;
+border-radius: 18px;
+font-size: 15px;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 8px;
+user-select: none;
+}
+
+.dropdown-btn i {
+font-size: 12px;
+transition: transform 0.3s;
+}
+
+.dropdown-menu {
+display: none;
+position: absolute;
+right: 0;
+top: 45px;
+background-color: var(--dropdown-bg);
+min-width: 150px;
+box-shadow: 0px 8px 20px rgba(0,0,0,0.4);
+border-radius: 16px;
+padding: 8px 0;
+z-index: 100;
+border: 1px solid var(--border-color);
+}
+
+.dropdown-menu.show {
+display: block;
+}
+
+.dropdown-item {
+padding: 10px 16px;
+cursor: pointer;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 15px;
+color: var(--text-color);
+transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+background-color: rgba(0, 210, 255, 0.1);
+}
+
+.dropdown-item.selected {
+color: #00d2ff;
+font-weight: bold;
+}
+
+.dropdown-item .check-icon {
+display: none;
+font-size: 12px;
+}
+
+.dropdown-item.selected .check-icon {
+display: inline;
+}
+
+/* Theme Toggle Button Wrapper */
+.glow-circle-wrapper {
+position: relative;
+border-radius: 50%;
+padding: 2.5px;
+background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff);
+background-size: 200% 200%;
+animation: lightRun 3s linear infinite;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.theme-toggle-btn {
+background: var(--container-bg);
+border: none;
+color: var(--text-color);
+width: 34px;
+height: 34px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+font-size: 14px;
+}
+
+.profile-container {
+width: 100%;
+max-width: 550px;
+margin: 0 auto;
+background-color: var(--container-bg);
+border-radius: 0px;
+overflow: hidden;
+box-shadow: 0 0.5px 1px rgba(0,0,0,0.1);
+transition: background-color 0.3s;
+}
+
+/* Cover Photo */
+.cover-photo {
+width: 100%;
+height: 180px;
+background-image: url('https://i.postimg.cc/GtJvWFHk/1791715075930.jpg');
+background-size: cover;
+background-position: center;
+position: relative;
+}
+
+/* Logo */
+.profile-picture-container {
+width: 130px;
+height: 130px;
+border-radius: 50%;
+border: 2px solid var(--border-color);
+position: absolute;
+left: 20px;
+top: 120px;
+overflow: hidden;
+box-shadow: 0 0 5px rgba(0,0,0,0.2);
+background-color: var(--container-bg);
+z-index: 10;
+}
+
+.profile-picture-container img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+/* Top Info */
+.top-info {
+padding: 90px 20px 20px 20px;
+}
+
+.name {
+font-size: 35px;
+font-weight: 600;
+margin: 0;
+color: var(--text-color);
+}
+
+.age {
+font-size: 12px;
+margin: 4px 0;
+color: var(--text-secondary);
+}
+.name1 {
+font-size: 15px;
+margin: 4px 0;
+color: var(--text-secondary);
+}
+.about {
+font-size: 15px;
+margin: 4px 0;
+color: var(--text-secondary);
+white-space: pre-line;
+}
+.contact {
+font-size: 15px;
+margin: 4px 0;
+}
+
+.headline {
+font-size: 14px;
+color: var(--text-secondary);
+margin: 4px 0;
+}
+
+.location-info {
+font-size: 12px;
+color: var(--text-secondary);
+margin: 4px 0;
+}
+
+/* Buttons Section */
+.button-section {
+padding: 0 20px 20px 20px;
+}
+
+.top-buttons-row {
+display: flex;
+gap: 12px;
+margin-bottom: 12px;
+}
+
+.full-width-button, .split-button {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 10px 24px;
+border-radius: 20px;
+font-size: 14px;
+font-weight: 600;
+text-decoration: none;
+transition: background-color 0.2s;
+border: 1px solid transparent;
+cursor: pointer;
+box-sizing: border-box;
+}
+
+.split-button {
+flex: 1;
+}
+
+.btn-facebook {
+background-color: #0073b1;
+color: #ffffff;
+}
+.btn-facebook:hover {
+background-color: #005582;
+}
+
+.btn-youtube {
+background-color: #ff0000;
+color: #ffffff;
+}
+.btn-youtube:hover {
+background-color: #cc0000;
+}
+
+.btn-whatsapp {
+background-color: #25d366;
+color: #ffffff;
+width: 100%;
+display: flex;
+}
+.btn-whatsapp:hover {
+background-color: #1ebd5a;
+}
+
+.btn-facebook i, .btn-youtube i, .btn-whatsapp i {
+margin-right: 8px;
+font-size: 16px;
+}
+
+/* පහළම කළු කොටුව */
+.footer-box {
+width: 100%;
+max-width: 550px;
+margin: 0 auto;
+background-color: #000000;
+text-align: center;
+padding: 25px 15px;
+box-sizing: border-box;
+border-top: 1px solid var(--border-color);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 12px;
+}
+
+/* "Crafted with ❤️ by MR RAJINDU NIMSARA " Badge එක */
+.crafted-badge {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+background-color: #111111;
+border: 1px solid #222222;
+border-radius: 25px;
+padding: 8px 18px;
+font-size: 14px;
+color: #888888;
+}
+
+.crafted-badge .code-icon {
+color: #00d2ff;
+font-weight: bold;
+}
+
+.crafted-badge .heart-icon {
+color: #ff2d55;
+}
+
+.crafted-badge .author {
+color: #ffffff;
+font-weight: bold;
+letter-spacing: 0.5px;
+}
+
+/* Copyright text එක - ලා නිල් පාටින් */
+.copyright-text {
+margin: 0;
+font-size: 14px;
+color: #00d2ff;
+font-weight: 500;
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+<div class="loading-graphic">
+<svg viewBox="0 0 24 24" fill="none" stroke="#00d2ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+</svg>
+</div>
+<div class="loading-text">
+<span>L</span>
+<span>O</span>
+<span>A</span>
+<span>D</span>
+<span>I</span>
+<span>N</span>
+<span>G</span>
+</div>
+</div>
+
+<!-- ප්‍රධාන වෙබ් අඩවි අන්තර්ගතය -->
+<div id="main-content">
+<!-- Top Header -->
+<div class="top-header">
+<div class="header-logo">𝙽𝙸𝙼𝚂𝙰𝚁𝙰 𝚃𝙴𝙲𝙷</div>
+<div class="controls-container">
+<!-- Custom Language Dropdown -->
+<div class="glow-border-wrapper">
+<div class="custom-dropdown">
+<div class="dropdown-btn" onclick="toggleDropdown()">
+<span id="selectedLangText">English</span>
+<i class="fas fa-chevron-down" id="arrowIcon"></i>
+</div>
+<div class="dropdown-menu" id="dropdownMenu">
+<div class="dropdown-item selected" onclick="selectLanguage('en', 'English')">
+<span>English</span>
+<i class="fas fa-check check-icon"></i>
+</div>
+<div class="dropdown-item" onclick="selectLanguage('si', 'සිංහල')">
+<span>සිංහල</span>
+<i class="fas fa-check check-icon"></i>
+</div>
+<div class="dropdown-item" onclick="selectLanguage('ta', 'தமிழ்')">
+<span>தமிழ்</span>
+<i class="fas fa-check check-icon"></i>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Dark/Light Theme Button -->
+<div class="glow-circle-wrapper">
+<button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">
+<i class="fas fa-sun" id="themeIcon"></i>
+</button>
+</div>
+</div>
+</div>
+
+<div class="profile-container">
+<!-- Cover Photo -->
+<div class="cover-photo">
+<!-- Profile Logo -->
+<div class="profile-picture-container">
+<img src="https://i.postimg.cc/Mp9s4r9w/FB-IMG-1791477472023.jpg" alt="Profile Picture">
+</div>
+</div>
+
+<!-- Info -->
+<div class="top-info">
+<p class="name">𝙽𝙸𝙼𝚂𝙰𝚁𝙰 𝚃𝙴𝙲𝙷</p>
+<p> </p>
+<p class="name1" id="txtName1">Hi guys, I am Rajindu Nimsara</p>
+<p></p>
+<p class="headline" id="txtStudy">Study📚 :- University of Vocational Technology Collage in Sri Lanka</p>
+<p class="location-info" id="txtLocation">
+Location📍 :- Ahungalla, Southern Province, Sri Lanka ·
+</p>
+<p class="age" id="txtAge">Age :- 20</p>
+<p></p>
+<p class="about" id="txtAbout">Hi guys, Welcome to Nimsara Tech Profile.
+
+I Persent Videos about any Whatsapp, reviews, technical and important Software. In addition I create video about video me. Please subscribe and like. Thank you so much</p>
+<p> </p>
+<p></p>
+<p class="contact" id="txtContact">Contact me for more details👇👇</p>
+</div>
+
+<!-- Buttons -->
+<div class="button-section">
+<div class="top-buttons-row">
+<a href="https://www.facebook.com/share/19hfS73Dd1/" target="_blank" class="split-button btn-facebook">
+<i class="fab fa-facebook-f"></i>
+<span id="btnFacebook">Facebook</span>
+</a>
+
+<a href="https://youtube.com/@nimsara_tech?si=Kg1IHO-1wqb3Zi8x" target="_blank" class="split-button btn-youtube">
+<i class="fab fa-youtube"></i>
+<span id="btnYoutube">Youtube</span>
+</a>
+</div>
+
+<a href="https://wa.me/message/7CK6MNLMTWN2L1" target="_blank" class="full-width-button btn-whatsapp">
+<i class="fab fa-whatsapp"></i>
+<span id="btnWhatsapp">WhatsApp</span>
+</a>
+</div>
+</div>
+
+<!-- පහළම කළු කොටුව -->
+<div class="footer-box">
+<!-- Crafted with heart badge -->
+<div class="crafted-badge">
+<span class="code-icon"></></span>
+<span>Crafted with</span>
+<span class="heart-icon">❤️</span>
+<span>by</span>
+<span class="author">𝙼𝚁 𝚁𝙰𝙹𝙸𝙽𝙳𝚄 𝙽𝙸𝙼𝚂𝙰𝚁𝙰</span>
+</div>
+
+<!-- Copyright line (ලා නිල් පාටින්) -->
+<p class="copyright-text">© 2026 𝙽𝙸𝙼𝚂𝙰𝚁𝙰 𝚃𝙴𝙲𝙷. All rights reserved.</p>
+</div>
+</div>
+
+<!-- JavaScript -->
+<script>
+window.addEventListener('load', function() {
+setTimeout(function() {
+const loadingScreen = document.getElementById('loading-screen');
+const mainContent = document.getElementById('main-content');
+
+loadingScreen.style.opacity = '0';
+setTimeout(function() {
+loadingScreen.style.display = 'none';
+mainContent.style.display = 'block';
+}, 500);
+}, 2000);
+});
+
+function toggleTheme() {
+const body = document.body;
+const themeIcon = document.getElementById('themeIcon');
+
+if (body.getAttribute('data-theme') === 'dark') {
+body.setAttribute('data-theme', 'light');
+themeIcon.classList.remove('fa-sun');
+themeIcon.classList.add('fa-moon');
+} else {
+body.setAttribute('data-theme', 'dark');
+themeIcon.classList.remove('fa-moon');
+themeIcon.classList.add('fa-sun');
+}
+}
+
+const translations = {
+en: {
+name1: "Hi guys, I am Rajindu Nimsara",
+study: "Study📚 :- University of Vocational Technology Collage in Sri Lanka",
+location: "Location📍 :- Ahungalla, Southern Province, Sri Lanka ·",
+age: "Age :- 20",
+about: "Hi guys, Welcome to Nimsara Tech Profile.\n\nI Persent Videos about any Whatsapp, reviews, technical and important Software. In addition I create video about video me. Please follow and like. Thank you so much",
+contact: "Contact me for more details👇👇",
+fb: "Facebook",
+yt: "Youtube",
+wa: "WhatsApp"
+},
+si: {
+name1: "හායි යාලුවනේ, මම රජිදු නිම්සර",
+study: "අධ්‍යාපනය📚 :- ශ්‍රී ලංකා වෘත්තීය තාක්ෂණ විශ්වවිද්‍යාලය",
+location: "ස්ථානය📍 :- අහුන්ගල්ල, දකුණු පළාත, ශ්‍රී ලංකා ·",
+age: "වයස :- 20",
+about: "හායි යාලුවනේ, නිම්සර ටෙක් ප්‍රොෆයිල් වෙත සාදරයෙන් පිළිගනිමු.\n\nමම වට්ස්ඇප්, රිවිව්ස්, ටෙක්නිකල් සහ වැදගත් මෘදුකාංග පිළිබඳ වීඩියෝ ඉදිරිපත් කරමි. කරුණාකර ෆලෝව්‍ සහ ලයික් කරන්න. බොහෝම ස්තූතියි!",
+contact: "වැඩි විස්තර සඳහා මාව සම්බන්ධ කරගන්න👇👇",
+fb: "ෆේස්බුක්",
+yt: "යූ ටියුබ්",
+wa: "වට්ස්ඇප්"
+},
+ta: {
+name1: "ஹாய் நண்பர்களே, நான் ரஜிந்து நிம்சார",
+study: "படிப்பு📚 :- இலங்கையின் தொழிற்கல்வி தொழில்நுட்பக் கல்லூரி",
+location: "இடம்📍 :- அஹுங்கல்ல, தெ மாகாணம், இலங்கை ·",
+age: "வயது :- 20",
+about: "ஹாய் நண்பர்களே, நிம்சார டெக் சுயவிவரத்திற்கு உங்களை வரவேற்கிறேன்.\n\nநான் வாட்ஸ்அப், விமர்சனங்கள், தொழில்நுட்ப மற்றும் முக்கியமான மென்பொருட்கள் பற்றிய வீடியோக்களை வழங்குகிறேன். தயவுசெய்து சப்ஸ்கிரைப் மற்றும் லைக் செய்யவும். மிக்க நன்றி",
+contact: "மேலும் விவரங்களுக்கு தொடர்பு கொள்ளவும்👇👇",
+fb: "பேஸ்புக்",
+yt: "யூடியூப்",
+wa: "வாட்ஸ்அப்"
+}
+};
+
+function toggleDropdown() {
+const menu = document.getElementById('dropdownMenu');
+const arrow = document.getElementById('arrowIcon');
+menu.classList.toggle('show');
+if(menu.classList.contains('show')) {
+arrow.style.transform = 'rotate(180deg)';
+} else {
+arrow.style.transform = 'rotate(0deg)';
+}
+}
+
+function selectLanguage(langCode, langText) {
+document.getElementById('selectedLangText').innerText = langText;
+
+const items = document.querySelectorAll('.dropdown-item');
+items.forEach(item => item.classList.remove('selected'));
+event.currentTarget.classList.add('selected');
+
+const t = translations[langCode];
+document.getElementById('txtName1').innerText = t.name1;
+document.getElementById('txtStudy').innerText = t.study;
+document.getElementById('txtLocation').innerText = t.location;
+document.getElementById('txtAge').innerText = t.age;
+document.getElementById('txtAbout').innerText = t.about;
+document.getElementById('txtContact').innerText = t.contact;
+document.getElementById('btnFacebook').innerText = t.fb;
+document.getElementById('btnYoutube').innerText = t.yt;
+document.getElementById('btnWhatsapp').innerText = t.wa;
+
+toggleDropdown();
+}
+
+window.onclick = function(event) {
+if (!event.target.closest('.custom-dropdown')) {
+const menu = document.getElementById('dropdownMenu');
+const arrow = document.getElementById('arrowIcon');
+if (menu.classList.contains('show')) {
+menu.classList.remove('show');
+arrow.style.transform = 'rotate(0deg)';
+}
+}
+}
+</script>
+</body>
+</html>
