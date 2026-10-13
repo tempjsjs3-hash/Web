@@ -36,6 +36,30 @@ padding: 0;
 background-color: var(--bg-color);
 color: var(--text-color);
 transition: background-color 0.3s, color 0.3s;
+position: relative;
+overflow-x: hidden; /* Screen එකෙන් පැත්තට පැනීම වැළැක්වීමට */
+}
+
+/* --- Snow & Heart Fall Effect Styles (නිවැරදි කරන ලදී) --- */
+.snowflake {
+position: fixed; /* absolute වෙනුවට fixed භාවිත කරයි */
+top: -20px;
+color: #00d2ff;
+user-select: none;
+z-index: 998;
+pointer-events: none;
+animation: fallAnimation linear infinite;
+}
+
+@keyframes fallAnimation {
+0% {
+transform: translateY(0px) rotate(0deg);
+opacity: 1;
+}
+100% {
+transform: translateY(100vh) rotate(360deg);
+opacity: 0.2;
+}
 }
 
 /* --- Loading Screen Styles --- */
@@ -425,6 +449,19 @@ align-items: center;
 gap: 12px;
 }
 
+/* Crafted Badge Wrapper for Running Light Effect */
+.crafted-badge-wrapper {
+position: relative;
+border-radius: 25px;
+padding: 2.5px;
+background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff);
+background-size: 200% 200%;
+animation: lightRun 3s linear infinite;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+}
+
 /* "Crafted with ❤️ by MR RAJINDU NIMSARA " Badge එක */
 .crafted-badge {
 display: inline-flex;
@@ -432,15 +469,14 @@ align-items: center;
 justify-content: center;
 gap: 6px;
 background-color: #111111;
-border: 1px solid #222222;
 border-radius: 25px;
-padding: 8px 18px;
+padding: 6px 16px;
 font-size: 14px;
 color: #888888;
 }
 
 .crafted-badge .code-icon {
-color: #00d2ff;
+color: #00BFFF;
 font-weight: bold;
 }
 
@@ -461,9 +497,70 @@ font-size: 14px;
 color: #00d2ff;
 font-weight: 500;
 }
+
+/* --- Floating Music Button Styles --- */
+.floating-music-wrapper {
+position: fixed;
+bottom: 25px;
+right: 20px;
+z-index: 1000;
+width: 55px;
+height: 55px;
+border-radius: 50%;
+padding: 2.5px;
+background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff);
+background-size: 200% 200%;
+animation: lightRun 3s linear infinite;
+box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+cursor: pointer;
+transition: transform 0.2s ease;
+flex-shrink: 0;
+}
+
+.floating-music-wrapper:active {
+transform: scale(0.92);
+}
+
+.floating-music-btn {
+width: 100%;
+height: 100%;
+background-color: #0e1621;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #00d2ff;
+font-size: 22px;
+border: none;
+outline: none;
+cursor: pointer;
+}
+
+/* Play වන විට Rotate වන Animation එක */
+.floating-music-wrapper.playing .floating-music-btn i {
+animation: spinMusic 3s linear infinite;
+color: #00ffd5;
+}
+
+@keyframes spinMusic {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body data-theme="dark">
+
+<!-- Audio Element -->
+<audio id="bg-audio" loop preload="auto">
+  <source src="https://files.catbox.moe/ni1569.m4a" type="audio/mpeg">
+</audio>
+
+<!-- Fixed Position Music Button -->
+<div class="floating-music-wrapper" id="musicWrapper" onclick="toggleMusic()" title="Play / Pause Music">
+  <button class="floating-music-btn">
+    <i class="fas fa-music" id="musicIcon"></i>
+  </button>
+</div>
 
 <!-- Loading Screen -->
 <div id="loading-screen">
@@ -574,13 +671,15 @@ I Persent Videos about any Whatsapp, reviews, technical and important Software. 
 
 <!-- පහළම කළු කොටුව -->
 <div class="footer-box">
-<!-- Crafted with heart badge -->
+<!-- Crafted with heart badge with running light effect -->
+<div class="crafted-badge-wrapper">
 <div class="crafted-badge">
-<span class="code-icon"></></span>
+<span class="code-icon">&lt;/&gt;</span>
 <span>Crafted with</span>
 <span class="heart-icon">❤️</span>
 <span>by</span>
 <span class="author">𝙼𝚁 𝚁𝙰𝙹𝙸𝙽𝙳𝚄 𝙽𝙸𝙼𝚂𝙰𝚁𝙰</span>
+</div>
 </div>
 
 <!-- Copyright line (ලා නිල් පාටින්) -->
@@ -590,6 +689,9 @@ I Persent Videos about any Whatsapp, reviews, technical and important Software. 
 
 <!-- JavaScript -->
 <script>
+let isPlaying = false;
+let snowInterval = null;
+
 window.addEventListener('load', function() {
 setTimeout(function() {
 const loadingScreen = document.getElementById('loading-screen');
@@ -599,9 +701,69 @@ loadingScreen.style.opacity = '0';
 setTimeout(function() {
 loadingScreen.style.display = 'none';
 mainContent.style.display = 'block';
+
+// Loading screen අවසන් වූ පසු auto play ආරම්භ කිරීම
+startAudio();
 }, 500);
 }, 2000);
 });
+
+function startAudio() {
+const audio = document.getElementById('bg-audio');
+const musicWrapper = document.getElementById('musicWrapper');
+
+audio.play().then(() => {
+isPlaying = true;
+musicWrapper.classList.add('playing');
+startSnowEffect();
+}).catch(err => {
+console.log("Autoplay blocked by browser. Waiting for user interaction.", err);
+document.addEventListener('touchstart', autoPlayOnInteraction, { once: true });
+document.addEventListener('click', autoPlayOnInteraction, { once: true });
+});
+}
+
+function autoPlayOnInteraction() {
+const audio = document.getElementById('bg-audio');
+const musicWrapper = document.getElementById('musicWrapper');
+if (!isPlaying) {
+audio.play().then(() => {
+isPlaying = true;
+musicWrapper.classList.add('playing');
+startSnowEffect();
+}).catch(e => console.log("Play failed:", e));
+}
+}
+
+/* --- Smooth Falling Animation Generator --- */
+function startSnowEffect() {
+if (snowInterval) return;
+const symbols = ['❄', '❤️', '❄', '🖤', '❄️', '🩵'];
+
+snowInterval = setInterval(() => {
+const snow = document.createElement('div');
+snow.classList.add('snowflake');
+snow.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+snow.style.left = Math.random() * (window.innerWidth - 20) + 'px';
+snow.style.fontSize = (Math.random() * 10 + 12) + 'px';
+
+const duration = Math.random() * 3 + 4;
+snow.style.animationDuration = duration + 's';
+snow.style.opacity = Math.random() * 0.7 + 0.3;
+
+document.body.appendChild(snow);
+
+setTimeout(() => {
+snow.remove();
+}, duration * 1000);
+}, 250);
+}
+
+function stopSnowEffect() {
+clearInterval(snowInterval);
+snowInterval = null;
+document.querySelectorAll('.snowflake').forEach(el => el.remove());
+}
 
 function toggleTheme() {
 const body = document.body;
@@ -646,7 +808,7 @@ name1: "ஹாய் நண்பர்களே, நான் ரஜிந்�
 study: "படிப்பு📚 :- இலங்கையின் தொழிற்கல்வி தொழில்நுட்பக் கல்லூரி",
 location: "இடம்📍 :- அஹுங்கல்ல, தெ மாகாணம், இலங்கை ·",
 age: "வயது :- 20",
-about: "ஹாய் நண்பர்களே, நிம்சார டெக் சுயவிவரத்திற்கு உங்களை வரவேற்கிறேன்.\n\nநான் வாட்ஸ்அப், விமர்சனங்கள், தொழில்நுட்ப மற்றும் முக்கியமான மென்பொருட்கள் பற்றிய வீடியோக்களை வழங்குகிறேன். தயவுசெய்து சப்ஸ்கிரைப் மற்றும் லைக் செய்யவும். மிக்க நன்றி",
+about: "ஹாய் நண்பர்களே, நிம்சார டெக் சுயவிவரத்திற்கு உங்களை வரவேற்கிறேன்.\n\nநான் வாட்ஸ்அப், விமர்சனங்கள், தொழில்நுட்ப மற்றும் முக்கியமான மென்பொருட்கள் பற்றிய வீடியோக்களை வழங்குகிறேன். தயவுசெய்து சப்ஸ்கிரைப் සහ லைக் செய்யவும். மிக்க நன்றி",
 contact: "மேலும் விவரங்களுக்கு தொடர்பு கொள்ளவும்👇👇",
 fb: "பேஸ்புக்",
 yt: "யூடியூப்",
@@ -684,6 +846,27 @@ document.getElementById('btnYoutube').innerText = t.yt;
 document.getElementById('btnWhatsapp').innerText = t.wa;
 
 toggleDropdown();
+}
+
+/* --- Music Play / Pause Toggle Logic --- */
+function toggleMusic() {
+const audio = document.getElementById('bg-audio');
+const musicWrapper = document.getElementById('musicWrapper');
+
+if (isPlaying) {
+audio.pause();
+musicWrapper.classList.remove('playing');
+stopSnowEffect();
+isPlaying = false;
+} else {
+audio.play().then(() => {
+musicWrapper.classList.add('playing');
+startSnowEffect();
+isPlaying = true;
+}).catch(function(error) {
+console.log("Audio play failed:", error);
+});
+}
 }
 
 window.onclick = function(event) {
